@@ -112,7 +112,7 @@ export default function MathApp() {
         <h1 className="text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 drop-shadow-sm pb-2 mb-4 hover:scale-105 transition-transform cursor-default leading-tight md:leading-snug">
           Math Wizard TMag
         </h1>
-        <p className="text-lg text-gray-600 font-medium">Let's make learning math super fun!</p>
+        <p className="text-lg text-gray-600 font-medium">An experimental App built by Ragul!</p>
       </div>
 
       {/* Main Menu Cards */}
