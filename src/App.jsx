@@ -110,7 +110,7 @@ export default function MathApp() {
     <div className="animate-fade-in text-center">
       <div className="mb-8 mt-4">
         <h1 className="text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 drop-shadow-sm pb-2 mb-4 hover:scale-105 transition-transform cursor-default leading-tight md:leading-snug">
-          Math Wizard TMag
+          Math Wizard prototype for TMag
         </h1>
         <p className="text-lg text-gray-600 font-medium">An experimental App built by Ragul!</p>
       </div>
