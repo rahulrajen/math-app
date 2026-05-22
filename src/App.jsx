@@ -11,75 +11,66 @@ const randomBetween = (min, max) => Math.floor(Math.random() * (max - min + 1)) 
 
 const generateQuestion = (operation, difficulty) => {
   let n1, n2, correctAnswer;
+  const isFlipped = Math.random() > 0.5; // Used to alternate positions of single/double digits
 
   if (operation === '+') {
     if (difficulty === 'easy') {
       n1 = randomBetween(1, 9);
       n2 = randomBetween(1, 9);
     } else if (difficulty === 'medium') {
-      // Medium: Double digits, no carry over (easy mental calc)
-      const tens1 = randomBetween(1, 8);
-      const ones1 = randomBetween(1, 8);
-      const tens2 = randomBetween(1, 9 - tens1);
-      const ones2 = randomBetween(1, 9 - ones1);
-      n1 = tens1 * 10 + ones1;
-      n2 = tens2 * 10 + ones2;
+      const single = randomBetween(1, 9);
+      const double = randomBetween(10, 99);
+      n1 = isFlipped ? single : double;
+      n2 = isFlipped ? double : single;
     } else {
-      // Hard: Double digits with carry over
-      n1 = randomBetween(11, 89);
-      n2 = randomBetween(11, 99 - n1); // Keep max at 99
-      if (n1 % 10 + n2 % 10 <= 9) n1 += 3; // Force a carry if possible
+      n1 = randomBetween(10, 99);
+      n2 = randomBetween(10, 99);
     }
     correctAnswer = n1 + n2;
   } 
   else if (operation === '-') {
     if (difficulty === 'easy') {
-      n1 = randomBetween(2, 9);
-      n2 = randomBetween(1, n1 - 1);
+      n1 = randomBetween(1, 9);
+      n2 = randomBetween(1, n1); // Ensures no negative answers
     } else if (difficulty === 'medium') {
-      // Medium: Double digits, no borrow (easy mental calc)
-      const tens1 = randomBetween(2, 9);
-      const ones1 = randomBetween(2, 9);
-      const tens2 = randomBetween(1, tens1 - 1);
-      const ones2 = randomBetween(1, ones1 - 1);
-      n1 = tens1 * 10 + ones1;
-      n2 = tens2 * 10 + ones2;
+      // Always Double minus Single to prevent negative numbers
+      n1 = randomBetween(10, 99);
+      n2 = randomBetween(1, 9);
     } else {
-      // Hard: Double digits with borrow
-      n1 = randomBetween(21, 99);
-      n2 = randomBetween(11, n1 - 1);
-      if (n1 % 10 >= n2 % 10) n1 -= 5; // Force a borrow if possible
-      if (n1 <= n2) n1 = n2 + 5; 
+      n1 = randomBetween(20, 99);
+      n2 = randomBetween(10, n1 - 1);
     }
     correctAnswer = n1 - n2;
   } 
   else if (operation === '×') {
     if (difficulty === 'easy') {
-      n1 = randomBetween(1, 5);
-      n2 = randomBetween(1, 5);
+      n1 = randomBetween(1, 9);
+      n2 = randomBetween(1, 9);
     } else if (difficulty === 'medium') {
-      n1 = randomBetween(2, 10);
-      n2 = randomBetween(2, 10);
+      const single = randomBetween(2, 9);
+      const simpleDouble = randomBetween(10, 20); // Keep double digits simple for mental math
+      n1 = isFlipped ? single : simpleDouble;
+      n2 = isFlipped ? simpleDouble : single;
     } else {
-      // Hard: Double digit x single digit (result <= 99)
-      n1 = randomBetween(11, 33); 
-      n2 = randomBetween(2, Math.floor(99 / n1));
+      n1 = randomBetween(10, 99);
+      n2 = randomBetween(10, 99);
     }
     correctAnswer = n1 * n2;
   } 
   else if (operation === '÷') {
     if (difficulty === 'easy') {
-      n2 = randomBetween(1, 5);
-      correctAnswer = randomBetween(1, 5);
+      n2 = randomBetween(1, 9);
+      correctAnswer = randomBetween(1, 9);
     } else if (difficulty === 'medium') {
-      n2 = randomBetween(2, 10);
-      correctAnswer = randomBetween(2, 10);
+      const single = randomBetween(2, 9);
+      const simpleDouble = randomBetween(10, 20); // Keep double digits simple
+      n2 = isFlipped ? single : simpleDouble;
+      correctAnswer = isFlipped ? simpleDouble : single;
     } else {
-      // Hard: Result is max 99, Divisor max 9
-      n2 = randomBetween(2, 9);
-      correctAnswer = randomBetween(11, Math.floor(99 / n2));
+      n2 = randomBetween(10, 99);
+      correctAnswer = randomBetween(10, 99);
     }
-    n1 = n2 * correctAnswer;
+    n1 = n2 * correctAnswer; // Dividend is calculated to guarantee a whole number result
   }
 
   return { n1, n2, operation, correctAnswer };
@@ -430,7 +421,6 @@ export default function MathApp() {
     const startGame = () => {
       const TIME_LIMIT = testDuration * 60;
       
-      // Generate 10 unique questions
       const qs = [];
       for(let i=0; i<TOTAL_QUESTIONS; i++) {
         let q;
@@ -482,7 +472,6 @@ export default function MathApp() {
       });
     }, [operation, difficulty, testDuration]); 
 
-    // Timer effect
     useEffect(() => {
       if (gameState === 'playing') {
         timerRef.current = setInterval(() => {
@@ -565,7 +554,6 @@ export default function MathApp() {
           </div>
 
           <div className="bg-white rounded-[3rem] shadow-sm border-4 border-indigo-100 p-8 text-center relative overflow-hidden mb-8">
-            {/* Big Bold Timer */}
             <div className={`text-center mb-8 pb-6 border-b-2 border-dashed ${isLowTime ? 'border-red-200' : 'border-indigo-50'}`}>
               <div className={`text-6xl md:text-7xl font-black tracking-tight flex items-center justify-center gap-3 ${
                 isLowTime ? 'text-red-500 animate-pulse' : 'text-gray-800'
