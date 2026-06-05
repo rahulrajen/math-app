@@ -371,6 +371,11 @@ export default function MathApp() {
                 type="number" 
                 value={answer}
                 onChange={(e) => setAnswer(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                  }
+                }}
                 className={`w-full text-center text-4xl font-bold py-4 rounded-2xl border-4 outline-none transition-colors ${
                   feedback === 'correct' ? 'bg-green-100 border-green-400 text-green-700' :
                   feedback === 'wrong' ? 'bg-red-100 border-red-400 text-red-700 animate-shake' :
@@ -575,6 +580,11 @@ export default function MathApp() {
                 type="number" 
                 value={answer}
                 onChange={(e) => setAnswer(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                  }
+                }}
                 className="w-full text-center text-5xl font-bold py-4 rounded-2xl border-4 bg-gray-50 border-indigo-200 focus:border-indigo-500 text-indigo-900 outline-none"
                 placeholder="0"
                 autoFocus
